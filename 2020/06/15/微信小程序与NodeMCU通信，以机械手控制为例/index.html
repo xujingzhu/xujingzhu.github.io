@@ -1,0 +1,1238 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="https://s1.ax1x.com/2020/09/13/w089XQ.png">
+  <link rel="icon" type="image/png" href="https://s1.ax1x.com/2020/09/13/w089XQ.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>微信小程序与NodeMCU通信，以机械手控制为例 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/vs2015.min.css" />
+    
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_pf9vaxs7x7b.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Geek</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('https://w.wallhaven.cc/full/j5/wallhaven-j52r8w.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-06-15 11:15" pubdate>
+        2020年6月15日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      37
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-post-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-post-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">微信小程序与NodeMCU通信，以机械手控制为例</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <h1 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h1><ul>
+<li>效果展示<br><img src="https://upload-images.jianshu.io/upload_images/23570498-ee0f58b36856966c.gif?imageMogr2/auto-orient/strip" srcset="/img/loading.gif" alt="效果展示"></li>
+<li>本文章主要讲述微信小程序与物联网开发板NodeMCU在局域网下进行通信，使用的通信协议为WebSocket协议。</li>
+<li>在本文中，以微信小程序控制舵机为例，演示通信过程。</li>
+<li>具体原理：在NodeMCU里创建WebSocket服务，微信小程序通过API<code>wx.connectSocket(Object object)</code>连接到机械手的WebSocket服务，之后便可通过API<code>SocketTask.send(Object object)</code>对机械手发送信息，机械手通过判断微信小程序发送的过来的信息，对舵机执行相应操作。</li>
+</ul>
+<hr>
+<p>#二、准备事项</p>
+<h4 id="1、硬件准备："><a href="#1、硬件准备：" class="headerlink" title="1、硬件准备："></a>1、硬件准备：</h4><ul>
+<li><p>NodeMCU开发板 1 块</p>
+</li>
+<li><p>机械手支架 1 个</p>
+</li>
+<li><p>舵机 3 个</p>
+</li>
+<li><p>电源模块1个（能够输出5v即可）</p>
+</li>
+<li><p>杜邦线若干</p>
+<h4 id="2、软件准备："><a href="#2、软件准备：" class="headerlink" title="2、软件准备："></a>2、软件准备：</h4><h6 id="2-1、下载安装微信开发者工具"><a href="#2-1、下载安装微信开发者工具" class="headerlink" title="2.1、下载安装微信开发者工具"></a>2.1、下载安装微信开发者工具</h6><h6 id="2-2、下载安装Arduino并添加ESP8266开发板库-可观看作者的另一篇教程，链接如下"><a href="#2-2、下载安装Arduino并添加ESP8266开发板库-可观看作者的另一篇教程，链接如下" class="headerlink" title="2.2、下载安装Arduino并添加ESP8266开发板库(可观看作者的另一篇教程，链接如下)"></a>2.2、下载安装Arduino并添加ESP8266开发板库(可观看作者的另一篇教程，链接如下)</h6></li>
+<li><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/16062a3e0cab">https://www.jianshu.com/p/16062a3e0cab</a></p>
+<h6 id="2-3、下载第三方库WebSocketsServer-h，链接如下"><a href="#2-3、下载第三方库WebSocketsServer-h，链接如下" class="headerlink" title="2.3、下载第三方库WebSocketsServer.h，链接如下"></a>2.3、下载第三方库WebSocketsServer.h，链接如下</h6></li>
+<li><p>链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1FbO9m4wS2MQ-Pat9OBOsyA">https://pan.baidu.com/s/1FbO9m4wS2MQ-Pat9OBOsyA</a>  提取码：4xs6 </p>
+</li>
+<li><p>第三方库下载完成之后将其解压，然后放置在项目文件夹路径下</p>
+</li>
+<li><p>项目文件夹路径查看方式如下</p>
+</li>
+<li><p>打开Arduino IDE → 点击文件 → 首选项<br><img src="https://upload-images.jianshu.io/upload_images/23570498-442dd4a2a0688ec7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" srcset="/img/loading.gif" alt="项目文件夹路径"></p>
+</li>
+<li><p>将下载的库放置在该路径下的libraries文件夹里<br><img src="https://upload-images.jianshu.io/upload_images/23570498-ed918bc009d27361.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" srcset="/img/loading.gif" alt="第三方库放置位置"></p>
+</li>
+</ul>
+<hr>
+<p>#三、模块介绍</p>
+<ul>
+<li><p>NodeMCU是一款基于ESP8266芯片的物联网开发板，价格便宜，开发简单。<br><img src="https://upload-images.jianshu.io/upload_images/23570498-eaade43ae735fbe6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/400" srcset="/img/loading.gif" alt="NodeMCU开发板外观"></p>
+</li>
+<li><p>三自由度的机械手支架，某宝上买的，各关节上面安装的是舵机。<br><img src="https://upload-images.jianshu.io/upload_images/23570498-4021fd5e9789d6b1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/400" srcset="/img/loading.gif" alt="机械手支架"></p>
+</li>
+<li><p>舵机是一种位置（角度）伺服的驱动器，适用于那些需要角度不断变化并可以保持的控制系统。舵机有三根线，分别为VCC(红色)、GND(棕色)和信号线(黄色)<br><img src="https://upload-images.jianshu.io/upload_images/23570498-178cf3f598945ff1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/400" srcset="/img/loading.gif" alt="舵机外观"></p>
+</li>
+<li><p>因为上述舵机需要用5v电源驱动，NodeMCU自身不足以驱动3个舵机，所以需要外接电源，只要能输出5v就行。本款电源模块是输入12v，输出5v，也是某宝上买的。<br><img src="https://upload-images.jianshu.io/upload_images/23570498-c15127919e655646.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/400" srcset="/img/loading.gif" alt="电源模块"></p>
+</li>
+</ul>
+<hr>
+<h1 id="四、接线"><a href="#四、接线" class="headerlink" title="四、接线"></a>四、接线</h1><p>1、分别将3个舵机的红线（VD）接到电源模块的5v接口，棕线（GND）接到电源模块的GND接口。<br>2、将电源模块的GND与NodeMCU的GND相连。<br>3、将舵机的黄线接到NodeMCU的PWM（模拟信号）口，本文中选用2、4、5口作为舵机的控制IO口。</p>
+<h1 id="五、代码编写"><a href="#五、代码编写" class="headerlink" title="五、代码编写"></a>五、代码编写</h1><h4 id="1、NodeMCU"><a href="#1、NodeMCU" class="headerlink" title="1、NodeMCU"></a>1、NodeMCU</h4><h6 id="1-1、开发板选择，如图所示"><a href="#1-1、开发板选择，如图所示" class="headerlink" title="1.1、开发板选择，如图所示"></a>1.1、开发板选择，如图所示</h6><p><img src="https://upload-images.jianshu.io/upload_images/23570498-d90059f093b1e453.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" srcset="/img/loading.gif" alt="开发板选择"></p>
+<h6 id="1-2、具体代码"><a href="#1-2、具体代码" class="headerlink" title="1.2、具体代码"></a>1.2、具体代码</h6><div class="hljs"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;ESP8266WiFi.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;WebSocketsServer.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;ESP8266mDNS.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Servo.h&gt;</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> H_MIN_DEG 0     <span class="hljs-comment">// 水平舵机的最小角度</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> H_MAX_DEG 180   <span class="hljs-comment">// 水平舵机的最大角度</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> V_MIN_DEG 70    <span class="hljs-comment">// 垂直舵机的最小角度</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> V_MAX_DEG 155   <span class="hljs-comment">// 垂直舵机的最大角度</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> G_MIN_DEG 60    <span class="hljs-comment">// 机械爪的最小角度</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> G_MAX_DEG 135   <span class="hljs-comment">// 机械爪的最大角度</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> H_INIT_DEG 90   <span class="hljs-comment">// 水平舵机的初始角度</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> V_INIT_DEG 100  <span class="hljs-comment">// 垂直舵机的初始角度</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> G_INIT_DEG 60   <span class="hljs-comment">// 机械爪的初始角度</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> WEB_SOCKET_POST 80            <span class="hljs-comment">// webSocket服务端口</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> MDNS_SERVICE_NAME <span class="hljs-meta-string">&quot;gripper&quot;</span>   <span class="hljs-comment">// MDNS服务名称</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> MDNS_SERVICE_TYPE <span class="hljs-meta-string">&quot;tcp&quot;</span>       <span class="hljs-comment">// MDNS服务类型</span></span>
+
+Servo horizontal;   <span class="hljs-comment">// 水平舵机</span>
+Servo vertical;     <span class="hljs-comment">// 垂直舵机</span>
+Servo gripper;      <span class="hljs-comment">// 机械爪</span>
+
+WebSocketsServer webSocket = WebSocketsServer(WEB_SOCKET_POST); <span class="hljs-comment">//创建webSocket服务</span>
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span> </span>&#123;
+  <span class="hljs-comment">//  初始化舵机</span>
+  servoInit();
+  <span class="hljs-comment">//  初始化串口，设置波特率为9600</span>
+  Serial.begin(<span class="hljs-number">9600</span>);
+  <span class="hljs-comment">//  一键配网</span>
+  smartConfig();
+
+  <span class="hljs-comment">//  设置MDNS域名服务</span>
+  <span class="hljs-keyword">if</span> (MDNS.begin(<span class="hljs-string">&quot;esp8266&quot;</span>)) &#123;
+    Serial.println(<span class="hljs-string">&quot;MDNS服务开始！&quot;</span>);
+  &#125;
+  <span class="hljs-comment">// 注册MDNS服务</span>
+  <span class="hljs-keyword">if</span>(MDNS.addService(MDNS_SERVICE_NAME,MDNS_SERVICE_TYPE,<span class="hljs-number">80</span>)) &#123;
+    Serial.println(<span class="hljs-string">&quot;MDNS服务注册成功！&quot;</span>);
+  &#125;
+  webSocket.begin();
+  <span class="hljs-comment">// 注册webSocket服务的回调函数</span>
+  webSocket.onEvent(webSocketEvent);
+  Serial.println(<span class="hljs-string">&quot;webSocket服务开始&quot;</span>);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span> </span>&#123;
+  MDNS.update();
+  webSocket.loop();
+&#125;
+
+<span class="hljs-comment">// 一键配网</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">smartConfig</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+  WiFi.begin();
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">3</span>; i++)
+  &#123;
+    <span class="hljs-keyword">if</span> (WiFi.status() == WL_CONNECTED)
+    &#123;
+      Serial.println(<span class="hljs-string">&quot;AutoConfig Success&quot;</span>);
+      Serial.<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;SSID:%s\r\n&quot;</span>, WiFi.SSID().c_str());
+      Serial.<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;PSW:%s\r\n&quot;</span>, WiFi.psk().c_str());
+      delay(<span class="hljs-number">1000</span>);
+      Serial.println(WiFi.localIP());
+      <span class="hljs-comment">//WiFi.printDiag(Serial); //打印关键的Wi-Fi诊断信息，信息比较多</span>
+      <span class="hljs-keyword">break</span>;
+    &#125;
+    <span class="hljs-keyword">else</span>
+    &#123;
+      Serial.println(<span class="hljs-string">&quot;AutoConfig Waiting...&quot;</span>);
+      <span class="hljs-comment">//Serial.println(WiFi.status());</span>
+      delay(<span class="hljs-number">1000</span>);
+    &#125;
+  &#125;
+  <span class="hljs-keyword">if</span> (WiFi.status() != WL_CONNECTED)
+  &#123;
+    Serial.println(<span class="hljs-string">&quot;AutoConfig Faild!&quot;</span> );
+    WiFi.mode(WIFI_STA);
+    Serial.println(<span class="hljs-string">&quot;\r\nWait for Smartconfig&quot;</span>);
+    WiFi.beginSmartConfig();
+    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>)
+    &#123;
+      Serial.print(<span class="hljs-string">&quot;.&quot;</span>);
+      <span class="hljs-keyword">if</span> (WiFi.smartConfigDone())
+      &#123;
+        Serial.println(<span class="hljs-string">&quot;SmartConfig Success&quot;</span>);
+        Serial.<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;SSID:%s\r\n&quot;</span>, WiFi.SSID().c_str());
+        Serial.<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;PSW:%s\r\n&quot;</span>, WiFi.psk().c_str());
+        delay(<span class="hljs-number">1000</span>);
+        Serial.println(WiFi.localIP());
+        WiFi.setAutoConnect(<span class="hljs-literal">true</span>);  <span class="hljs-comment">// 设置自动连接</span>
+        <span class="hljs-keyword">break</span>;
+      &#125;
+      delay(<span class="hljs-number">3000</span>);
+    &#125;
+  &#125;
+&#125;
+<span class="hljs-comment">// 舵机初始化</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">servoInit</span><span class="hljs-params">()</span> </span>&#123;
+  <span class="hljs-comment">//设置水平舵机连接的引脚</span>
+  horizontal.attach(<span class="hljs-number">2</span>);
+  <span class="hljs-comment">//设置垂直舵机连接的引脚</span>
+  vertical.attach(<span class="hljs-number">4</span>);
+  <span class="hljs-comment">//设置机械爪连接的引脚</span>
+  gripper.attach(<span class="hljs-number">5</span>);
+  <span class="hljs-comment">//设置水平舵机的初始角度</span>
+  horizontal.write(H_INIT_DEG);
+  <span class="hljs-comment">//设置垂直舵机的初始角度</span>
+  vertical.write(V_INIT_DEG);
+  <span class="hljs-comment">//设置机械爪的初始角度</span>
+  gripper.write(G_INIT_DEG);
+&#125;
+<span class="hljs-comment">// 将字符数组转换成字符串</span>
+<span class="hljs-function">String <span class="hljs-title">arrayToString</span><span class="hljs-params">(<span class="hljs-keyword">char</span> *arr, <span class="hljs-keyword">int</span> dataLenth)</span> </span>&#123;
+  String temp = <span class="hljs-string">&quot;&quot;</span>;
+  <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; dataLenth; i++) &#123;
+    temp += arr[i];
+  &#125;
+  <span class="hljs-keyword">return</span> temp;
+&#125;
+<span class="hljs-comment">// 根据上位机发的数据对舵机进行相应操作</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">servoWrite</span><span class="hljs-params">(String data)</span> </span>&#123;
+  <span class="hljs-keyword">if</span>(data == <span class="hljs-string">&quot;up&quot;</span>) &#123;
+    <span class="hljs-keyword">int</span> nowDeg = vertical.read();
+    <span class="hljs-keyword">if</span>(nowDeg - <span class="hljs-number">2</span> &gt;= V_MIN_DEG) &#123;
+      vertical.write(nowDeg - <span class="hljs-number">2</span>);
+    &#125;
+  &#125;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(data == <span class="hljs-string">&quot;down&quot;</span>) &#123;
+    <span class="hljs-keyword">int</span> nowDeg = vertical.read();
+    <span class="hljs-keyword">if</span>(nowDeg + <span class="hljs-number">2</span> &lt;= V_MAX_DEG) &#123;
+      vertical.write(nowDeg + <span class="hljs-number">2</span>);
+    &#125;
+  &#125;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(data == <span class="hljs-string">&quot;left&quot;</span>) &#123;
+    <span class="hljs-keyword">int</span> nowDeg = horizontal.read();
+    <span class="hljs-keyword">if</span>(nowDeg + <span class="hljs-number">2</span> &lt;= H_MAX_DEG) &#123;
+      horizontal.write(nowDeg + <span class="hljs-number">2</span>);
+    &#125;
+  &#125;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(data == <span class="hljs-string">&quot;right&quot;</span>) &#123;
+    <span class="hljs-keyword">int</span> nowDeg = horizontal.read();
+    <span class="hljs-keyword">if</span>(nowDeg - <span class="hljs-number">2</span> &gt;= H_MIN_DEG) &#123;
+      horizontal.write(nowDeg - <span class="hljs-number">2</span>);
+    &#125;
+  &#125;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(data == <span class="hljs-string">&quot;dis&quot;</span>) &#123;
+    <span class="hljs-keyword">int</span> nowDeg = gripper.read();
+    <span class="hljs-keyword">if</span>(nowDeg - <span class="hljs-number">5</span> &gt;= G_MIN_DEG) &#123;
+      gripper.write(nowDeg - <span class="hljs-number">5</span>);
+    &#125;
+  &#125;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(data == <span class="hljs-string">&quot;grab&quot;</span>) &#123;
+    <span class="hljs-keyword">int</span> nowDeg = gripper.read();
+    <span class="hljs-keyword">if</span>(nowDeg + <span class="hljs-number">5</span> &lt;= G_MAX_DEG) &#123;
+      gripper.write(nowDeg + <span class="hljs-number">5</span>);
+    &#125;
+  &#125;
+&#125;
+<span class="hljs-comment">// webSocket服务的回调函数</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">webSocketEvent</span><span class="hljs-params">(<span class="hljs-keyword">uint8_t</span> num, WStype_t type, <span class="hljs-keyword">uint8_t</span> * payload, <span class="hljs-keyword">size_t</span> length)</span> </span>&#123;
+  <span class="hljs-keyword">switch</span> (type) &#123;
+    <span class="hljs-keyword">case</span> WStype_DISCONNECTED: <span class="hljs-comment">//如果连接失败</span>
+      Serial.<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;[%u] Disconnected!\n&quot;</span>, num);
+      <span class="hljs-keyword">break</span>;
+    <span class="hljs-keyword">case</span> WStype_CONNECTED: <span class="hljs-comment">//如果连接成功</span>
+      &#123;
+        IPAddress ip = webSocket.remoteIP(num);
+        Serial.<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;[%u] Connected from %d.%d.%d.%d url: %s\n&quot;</span>, num, ip[<span class="hljs-number">0</span>], ip[<span class="hljs-number">1</span>], ip[<span class="hljs-number">2</span>], ip[<span class="hljs-number">3</span>], payload);
+        webSocket.sendTXT(num, <span class="hljs-string">&quot;连接成功&quot;</span>);  <span class="hljs-comment">//发送：返回信息到客户端</span>
+      &#125;
+      <span class="hljs-keyword">break</span>;
+    <span class="hljs-keyword">case</span> WStype_TEXT: <span class="hljs-comment">//如果收到字符串</span>
+      &#123;
+        String data = arrayToString((<span class="hljs-keyword">char</span> *)payload, length);
+        Serial.println(<span class="hljs-string">&quot;String:&quot;</span> + data);
+        servoWrite(data);
+        <span class="hljs-comment">//webSocket.sendTXT(num, payload);//发送信息到客户端</span>
+        <span class="hljs-comment">//webSocket.broadcastTXT(payload); // 发送数据到所有连接的客户端</span>
+      &#125;
+      <span class="hljs-keyword">break</span>;
+  &#125;
+&#125;</code></pre></div>
+<h4 id="2、微信小程序"><a href="#2、微信小程序" class="headerlink" title="2、微信小程序"></a>2、微信小程序</h4><h6 id="2-1、界面效果展示"><a href="#2-1、界面效果展示" class="headerlink" title="2.1、界面效果展示"></a>2.1、界面效果展示</h6><p><img src="https://upload-images.jianshu.io/upload_images/23570498-61dc42e5fea106ae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" srcset="/img/loading.gif" alt="微信小程序界面"></p>
+<h6 id="2-2、具体代码"><a href="#2-2、具体代码" class="headerlink" title="2.2、具体代码"></a>2.2、具体代码</h6><ul>
+<li>index.wxml<div class="hljs"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">view</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;relative&quot;</span>&gt;</span>
+  <span class="hljs-comment">&lt;!-- 背景图片 --&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">image</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;pic_background&quot;</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;images/yaogan_main.png&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">image</span>&gt;</span>
+  <span class="hljs-comment">&lt;!-- 摇杆图片 --&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">image</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;left:&#123;&#123;leftLooks&#125;&#125;px;top:&#123;&#123;topLooks&#125;&#125;px;&quot;</span> <span class="hljs-attr">bindtouchstart</span>=<span class="hljs-string">&#x27;ImageTouchstart&#x27;</span> <span class="hljs-attr">bindtouchend</span>=<span class="hljs-string">&#x27;ImageReturn&#x27;</span> <span class="hljs-attr">catchtouchmove</span>=<span class="hljs-string">&#x27;ImageTouchMove&#x27;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;pic_tou&quot;</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;images/yaogan_bg.png&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">image</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">view</span> <span class="hljs-attr">bindtap</span>=<span class="hljs-string">&quot;grab_onclik&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;grab&quot;</span>&gt;</span>抓<span class="hljs-tag">&lt;/<span class="hljs-name">view</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">view</span> <span class="hljs-attr">bindtap</span>=<span class="hljs-string">&quot;discharge_onclik&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;discharge&quot;</span>&gt;</span>放<span class="hljs-tag">&lt;/<span class="hljs-name">view</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">view</span>&gt;</span></code></pre></div></li>
+<li>index.wxss<div class="hljs"><pre><code class="hljs css"><span class="hljs-selector-tag">page</span>&#123;
+  <span class="hljs-attribute">height</span>: <span class="hljs-number">100%</span>;
+&#125;
+<span class="hljs-selector-class">.relative</span> &#123;
+  <span class="hljs-attribute">position</span>: relative;
+  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#000</span>;
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">100%</span>;
+  <span class="hljs-attribute">height</span>: <span class="hljs-number">100%</span>;
+&#125;
+<span class="hljs-selector-class">.pic_background</span> &#123;
+  <span class="hljs-attribute">position</span>: absolute;
+  <span class="hljs-attribute">top</span>: <span class="hljs-number">70px</span>;
+  <span class="hljs-attribute">left</span>: <span class="hljs-number">70px</span>;
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">120px</span>;
+  <span class="hljs-attribute">height</span>: <span class="hljs-number">120px</span>;
+&#125;
+<span class="hljs-selector-class">.pic_tou</span> &#123;
+  <span class="hljs-attribute">position</span>: absolute;
+  <span class="hljs-attribute">top</span>: <span class="hljs-number">80px</span>;
+  <span class="hljs-attribute">left</span>: <span class="hljs-number">80px</span>;
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">100px</span>;
+  <span class="hljs-attribute">height</span>: <span class="hljs-number">100px</span>;
+&#125;
+<span class="hljs-selector-class">.grab</span> &#123;
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">60px</span>;
+  <span class="hljs-attribute">height</span>: <span class="hljs-number">60px</span>;
+  <span class="hljs-attribute">border</span>: <span class="hljs-number">10px</span> <span class="hljs-number">#00C0FF</span> solid;
+  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">50%</span>;
+  <span class="hljs-attribute">color</span>: <span class="hljs-number">#FFF</span>;
+  <span class="hljs-attribute">text-align</span>: center;
+  <span class="hljs-attribute">line-height</span>: <span class="hljs-number">60px</span>;
+  <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">rotate</span>(<span class="hljs-number">90deg</span>);
+  <span class="hljs-attribute">position</span>: absolute;
+  <span class="hljs-attribute">bottom</span>: <span class="hljs-number">40px</span>;
+  <span class="hljs-attribute">left</span>: <span class="hljs-number">60px</span>;
+&#125;
+<span class="hljs-selector-class">.discharge</span> &#123;
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">60px</span>;
+  <span class="hljs-attribute">height</span>: <span class="hljs-number">60px</span>;
+  <span class="hljs-attribute">border</span>: <span class="hljs-number">10px</span> <span class="hljs-number">#00C0FF</span> solid;
+  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">50%</span>;
+  <span class="hljs-attribute">color</span>: <span class="hljs-number">#FFF</span>;
+  <span class="hljs-attribute">text-align</span>: center;
+  <span class="hljs-attribute">line-height</span>: <span class="hljs-number">60px</span>;
+  <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">rotate</span>(<span class="hljs-number">90deg</span>);
+  <span class="hljs-attribute">position</span>: absolute;
+  <span class="hljs-attribute">bottom</span>: <span class="hljs-number">40px</span>;
+  <span class="hljs-attribute">left</span>: <span class="hljs-number">180px</span>;
+&#125;
+``` 
+<span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">index</span><span class="hljs-selector-class">.js</span>
+``` <span class="hljs-selector-tag">js</span>
+<span class="hljs-selector-tag">Page</span>(&#123;
+  <span class="hljs-attribute">WebSocket</span>: null,
+  timer: null,
+  data: &#123;
+    StartX:<span class="hljs-string">&#x27;80&#x27;</span>,
+    StartY:<span class="hljs-string">&#x27;80&#x27;</span>,
+    leftLooks: <span class="hljs-string">&#x27;80&#x27;</span>,
+    topLooks: <span class="hljs-string">&#x27;80&#x27;</span>,
+    //半径
+    radius: <span class="hljs-string">&#x27;70&#x27;</span>,
+  &#125;,
+  // 页面第一次加载完成调用
+  <span class="hljs-selector-tag">onLoad</span>: <span class="hljs-selector-tag">function</span> (<span class="hljs-selector-tag">options</span>) &#123;
+    // 连接机械手
+    <span class="hljs-selector-tag">this</span><span class="hljs-selector-class">.ConnectGripper</span>();
+  &#125;,
+  // 摇杆第一次点击
+  <span class="hljs-selector-tag">ImageTouchstart</span>: <span class="hljs-selector-tag">function</span> (<span class="hljs-selector-tag">e</span>) &#123;
+    this.timer = setInterval(this.Callback, 15);
+  &#125;,
+  // 拖动摇杆移动
+  <span class="hljs-selector-tag">ImageTouchMove</span>: <span class="hljs-selector-tag">function</span> (<span class="hljs-selector-tag">e</span>) &#123;
+    var self = this;
+    var touchX = e.touches[0].clientX - 50;
+    var touchY = e.touches[0].clientY - 50;
+    var movePos = self.GetPosition(touchX, touchY);
+    <span class="hljs-selector-tag">self</span><span class="hljs-selector-class">.setData</span>(&#123;
+      <span class="hljs-attribute">leftLooks</span>: movePos.posX,
+      topLooks: movePos.posY
+    &#125;);
+  &#125;,
+  // 摇杆返回
+  <span class="hljs-selector-tag">ImageReturn</span>: <span class="hljs-selector-tag">function</span> (<span class="hljs-selector-tag">e</span>) &#123;
+    var self = this;
+    <span class="hljs-selector-tag">self</span><span class="hljs-selector-class">.setData</span>(&#123;
+      <span class="hljs-attribute">leftLooks</span>: self.data.StartX,
+      topLooks: self.data.StartY,
+    &#125;)
+    <span class="hljs-selector-tag">clearInterval</span>(<span class="hljs-selector-tag">this</span><span class="hljs-selector-class">.timer</span>);
+    this.timer = null;
+  &#125;,
+  // 获得触碰位置并且进行数据处理获得触碰位置与拖动范围的交点位置
+  <span class="hljs-selector-tag">GetPosition</span>: <span class="hljs-selector-tag">function</span> (<span class="hljs-selector-tag">touchX</span>, <span class="hljs-selector-tag">touchY</span>) &#123;
+    var self = this;
+    <span class="hljs-selector-tag">var</span> <span class="hljs-selector-tag">DValue_X</span>;
+    <span class="hljs-selector-tag">var</span> <span class="hljs-selector-tag">Dvalue_Y</span>;
+    <span class="hljs-selector-tag">var</span> <span class="hljs-selector-tag">Dvalue_Z</span>;
+    <span class="hljs-selector-tag">var</span> <span class="hljs-selector-tag">imageX</span>;
+    <span class="hljs-selector-tag">var</span> <span class="hljs-selector-tag">imageY</span>;
+    <span class="hljs-selector-tag">var</span> <span class="hljs-selector-tag">ratio</span>;
+    DValue_X = touchX - self.data.StartX;
+    Dvalue_Y = touchY - self.data.StartY;
+    Dvalue_Z = Math.sqrt(DValue_X * DValue_X + Dvalue_Y * Dvalue_Y);
+    //触碰点在范围内
+    if (Dvalue_Z &lt;= self.data.radius) &#123;
+      imageX = touchX;
+      imageY = touchY;
+      imageX = Math.round(imageX);
+      imageY = Math.round(imageY);
+      <span class="hljs-selector-tag">return</span> &#123; <span class="hljs-attribute">posX</span>: imageX, posY: imageY &#125;;
+    &#125; <span class="hljs-selector-tag">else</span> &#123;
+    //触碰点在范围外
+      ratio = self.data.radius / Dvalue_Z;
+      imageX = DValue_X * ratio + 80;
+      imageY = Dvalue_Y * ratio + 80;
+      imageX = Math.round(imageX);
+      imageY = Math.round(imageY);
+      <span class="hljs-selector-tag">return</span> &#123; <span class="hljs-attribute">posX</span>: imageX, posY: imageY &#125;;
+    &#125;
+  &#125;,
+  // setInterval的回调函数
+  <span class="hljs-selector-tag">Callback</span>: <span class="hljs-selector-tag">function</span> () &#123;
+    if(this.data.leftLooks &gt; this.data.StartX &amp;&amp; Math.abs(this.data.topLooks - this.data.StartY) &lt; 10) &#123;
+      this.WebSocketSend(&#x27;up&#x27;);
+    &#125; <span class="hljs-selector-tag">else</span> <span class="hljs-selector-tag">if</span> (<span class="hljs-selector-tag">this</span><span class="hljs-selector-class">.data</span><span class="hljs-selector-class">.leftLooks</span> &lt; <span class="hljs-selector-tag">this</span><span class="hljs-selector-class">.data</span><span class="hljs-selector-class">.StartX</span> &amp;&amp; <span class="hljs-selector-tag">Math</span><span class="hljs-selector-class">.abs</span>(<span class="hljs-selector-tag">this</span><span class="hljs-selector-class">.data</span><span class="hljs-selector-class">.topLooks</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">this</span><span class="hljs-selector-class">.data</span><span class="hljs-selector-class">.StartY</span>) &lt; 10) &#123;
+      this.WebSocketSend(&#x27;down&#x27;);
+    &#125; <span class="hljs-selector-tag">else</span> <span class="hljs-selector-tag">if</span> (<span class="hljs-selector-tag">this</span><span class="hljs-selector-class">.data</span><span class="hljs-selector-class">.topLooks</span> &lt; <span class="hljs-selector-tag">this</span><span class="hljs-selector-class">.data</span><span class="hljs-selector-class">.StartY</span> &amp;&amp; <span class="hljs-selector-tag">Math</span><span class="hljs-selector-class">.abs</span>(<span class="hljs-selector-tag">this</span><span class="hljs-selector-class">.data</span><span class="hljs-selector-class">.leftLooks</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">this</span><span class="hljs-selector-class">.data</span><span class="hljs-selector-class">.StartX</span>) &lt; 10) &#123;
+      this.WebSocketSend(&#x27;left&#x27;);
+    &#125; <span class="hljs-selector-tag">else</span> <span class="hljs-selector-tag">if</span> (<span class="hljs-selector-tag">this</span><span class="hljs-selector-class">.data</span><span class="hljs-selector-class">.topLooks</span> &gt; <span class="hljs-selector-tag">this</span><span class="hljs-selector-class">.data</span><span class="hljs-selector-class">.StartY</span> &amp;&amp; <span class="hljs-selector-tag">Math</span><span class="hljs-selector-class">.abs</span>(<span class="hljs-selector-tag">this</span><span class="hljs-selector-class">.data</span><span class="hljs-selector-class">.leftLooks</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">this</span><span class="hljs-selector-class">.data</span><span class="hljs-selector-class">.StartX</span>) &lt; 10) &#123;
+      this.WebSocketSend(&#x27;right&#x27;);
+    &#125;
+  &#125;,
+  // 往下位机发信息
+  <span class="hljs-selector-tag">WebSocketSend</span>: <span class="hljs-selector-tag">function</span>(<span class="hljs-selector-tag">res</span>) &#123;
+    this.WebSocket.send(&#123;
+      <span class="hljs-selector-tag">data</span>: <span class="hljs-selector-tag">res</span>,
+    &#125;);
+  &#125;,
+  // 连接机械手
+  <span class="hljs-selector-tag">ConnectGripper</span>: <span class="hljs-selector-tag">function</span>() &#123;
+    var that = this
+    // 搜索局域网下的机械手服务
+    <span class="hljs-selector-tag">wx</span><span class="hljs-selector-class">.startLocalServiceDiscovery</span>(&#123;
+      <span class="hljs-attribute">serviceType</span>: <span class="hljs-string">&#x27;_gripper._tcp.&#x27;</span>,
+      success: function (e) &#123;
+        wx.<span class="hljs-built_in">showLoading</span>(&#123;
+          title: <span class="hljs-string">&#x27;正在连接机械手&#x27;</span>,
+        &#125;)
+      &#125;,
+    &#125;);
+
+    // 监听服务发现事件
+    <span class="hljs-selector-tag">wx</span><span class="hljs-selector-class">.onLocalServiceFound</span>(<span class="hljs-selector-tag">function</span> (<span class="hljs-selector-tag">obj</span>) &#123;
+      // 发现服务之后停止搜索
+      <span class="hljs-selector-tag">wx</span><span class="hljs-selector-class">.stopLocalServiceDiscovery</span>(&#123;
+        <span class="hljs-attribute">success</span>: function (e) &#123;
+          // 隐藏加载对话框框
+          wx.<span class="hljs-built_in">hideLoading</span>(&#123;&#125;);
+        &#125;,
+      &#125;);
+      // 与机械手建立WebSocket连接
+      that.WebSocket = wx.connectSocket(&#123;
+        url: &#x27;ws://&#x27; + obj.ip + &#x27;:&#x27; + obj.port,
+      &#125;);
+      // 监听连接成功事件
+      <span class="hljs-selector-tag">wx</span><span class="hljs-selector-class">.onSocketOpen</span>(<span class="hljs-selector-tag">function</span> (<span class="hljs-selector-tag">res</span>) &#123;
+        // 显示连接成功对话框
+        <span class="hljs-selector-tag">wx</span><span class="hljs-selector-class">.showToast</span>(&#123;
+          <span class="hljs-attribute">title</span>: <span class="hljs-string">&#x27;连接成功&#x27;</span>,
+          icon: <span class="hljs-string">&#x27;success&#x27;</span>,
+          duration: <span class="hljs-number">2000</span>
+        &#125;)
+      &#125;)
+    &#125;)
+
+    // 监听mDNS停止搜索
+    <span class="hljs-selector-tag">wx</span><span class="hljs-selector-class">.onLocalServiceDiscoveryStop</span>(<span class="hljs-selector-tag">function</span> (<span class="hljs-selector-tag">obj</span>) &#123;
+      // 隐藏加载对话框框
+      <span class="hljs-selector-tag">wx</span><span class="hljs-selector-class">.hideLoading</span>(&#123;&#125;);
+      // 显示连接失败对话框
+      <span class="hljs-selector-tag">wx</span><span class="hljs-selector-class">.showToast</span>(&#123;
+        <span class="hljs-attribute">title</span>: <span class="hljs-string">&#x27;连接失败，Error：超时！&#x27;</span>,
+        icon: <span class="hljs-string">&#x27;none&#x27;</span>,
+        duration: <span class="hljs-number">2000</span>
+      &#125;);
+    &#125;);
+  &#125;,
+  // &quot;放&quot; 按钮点击事件
+  <span class="hljs-selector-tag">discharge_onclik</span>: <span class="hljs-selector-tag">function</span>() &#123;
+    this.WebSocketSend(&quot;dis&quot;);
+  &#125;,
+  // &quot;抓&quot; 按钮点击事件
+  <span class="hljs-selector-tag">grab_onclik</span>: <span class="hljs-selector-tag">function</span>() &#123;
+    this.WebSocketSend(&quot;grab&quot;);
+  &#125;
+&#125;)</code></pre></div>
+</li>
+</ul>
+<hr>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%8A%80%E6%9C%AF%E8%B4%B4/">技术贴</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/C%E8%AF%AD%E8%A8%80/">C语言</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%8D%95%E7%89%87%E6%9C%BA/">单片机</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Arduino/">Arduino</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/">微信小程序</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%9C%BA%E6%A2%B0%E6%89%8B/">机械手</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/06/22/MyBaits%E5%9C%A8Dao%E6%8E%A5%E5%8F%A3%E6%96%B9%E6%B3%95%E4%B8%AD%E4%BC%A0%E5%85%A5List%E6%88%96%E6%95%B0%E7%BB%84%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%8F%82%E6%95%B0%EF%BC%8C%E6%8A%9B%E5%87%BAparam-not-found%E5%BC%82%E5%B8%B8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MyBaits在Dao接口方法中传入List或数组类型的参数，抛出param not found异常</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/06/13/Arduino%20IDE%E7%83%A7%E5%86%99ESP8266%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/">
+                        <span class="hidden-mobile">Arduino IDE烧写ESP8266环境搭建教程</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script type="text/javascript">
+    function loadValine() {
+      addScript('https://cdn.staticfile.org/valine/1.4.14/Valine.min.js', function () {
+        new Valine({
+          el: "#vcomments",
+          app_id: "qP734H2xjPu5myijT5n9xQFw-gzGzoHsz",
+          app_key: "Y0u1HoRHwsRRgOM8utL9B4vp",
+          placeholder: "说点什么",
+          path: window.location.pathname,
+          avatar: "retro",
+          meta: ["nick","mail","link"],
+          pageSize: "10",
+          lang: "zh-CN",
+          highlight: true,
+          recordIP: true,
+          serverURLs: "https://qp734h2x.lc-cn-n1-shared.com",
+        });
+      });
+    }
+    waitElementVisible('vcomments', loadValine);
+  </script>
+  <noscript>Please enable JavaScript to view the <a target="_blank" href="https://valine.js.org" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer>
+  (function () {
+    // 查询存储的记录
+    function getRecord(Counter, target) {
+      return new Promise(function (resolve, reject) {
+        Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({target})))
+          .then(resp => resp.json())
+          .then(({results, code, error}) => {
+            if (code === 401) {
+              throw error;
+            }
+            if (results && results.length > 0) {
+              var record = results[0];
+              resolve(record);
+            } else {
+              Counter('post', '/classes/Counter', {target, time: 0})
+                .then(resp => resp.json())
+                .then((record, error) => {
+                  if (error) {
+                    throw error;
+                  }
+                  resolve(record);
+                }).catch(error => {
+                console.error('Failed to create', error);
+                reject(error);
+              });
+            }
+          }).catch((error) => {
+          console.error('LeanCloud Counter Error:', error);
+          reject(error);
+        });
+      })
+    }
+
+    // 发起自增请求
+    function increment(Counter, incrArr) {
+      return new Promise(function (resolve, reject) {
+        Counter('post', '/batch', {
+          "requests": incrArr
+        }).then((res) => {
+          res = res.json();
+          if (res.error) {
+            throw res.error;
+          }
+          resolve(res);
+        }).catch((error) => {
+          console.error('Failed to save visitor count', error);
+          reject(error);
+        });
+      });
+    }
+
+    // 构建自增请求体
+    function buildIncrement(objectId) {
+      return {
+        "method": "PUT",
+        "path": `/1.1/classes/Counter/${ objectId }`,
+        "body": {
+          "time": {
+            '__op': 'Increment',
+            'amount': 1
+          }
+        }
+      }
+    }
+
+    // 校验是否为有效的 UV
+    function validUV() {
+      var key = 'LeanCloud_UV_Flag';
+      var flag = localStorage.getItem(key);
+      if (flag) {
+        // 距离标记小于 24 小时则不计为 UV
+        if (new Date().getTime() - parseInt(flag) <= 86400000) {
+          return false;
+        }
+      }
+      localStorage.setItem(key, new Date().getTime().toString());
+      return true;
+    }
+
+    function addCount(Counter) {
+      var enableIncr = 'true' === 'true' && window.location.hostname !== 'localhost';
+      var getterArr = [];
+      var incrArr = [];
+
+      // 请求 PV 并自增
+      var pvCtn = document.querySelector('#leancloud-site-pv-container');
+      if (pvCtn || enableIncr) {
+        var pvGetter = getRecord(Counter, 'site-pv').then((record) => {
+          incrArr.push(buildIncrement(record.objectId))
+          var ele = document.querySelector('#leancloud-site-pv');
+          if (ele) {
+            ele.innerText = record.time + 1;
+            if (pvCtn) {
+              pvCtn.style.display = 'inline';
+            }
+          }
+        });
+        getterArr.push(pvGetter);
+      }
+
+      // 请求 UV 并自增
+      var uvCtn = document.querySelector('#leancloud-site-uv-container');
+      if (uvCtn || enableIncr) {
+        var uvGetter = getRecord(Counter, 'site-uv').then((record) => {
+          var vuv = validUV();
+          vuv && incrArr.push(buildIncrement(record.objectId))
+          var ele = document.querySelector('#leancloud-site-uv');
+          if (ele) {
+            ele.innerText = record.time + (vuv ? 1 : 0);
+            if (uvCtn) {
+              uvCtn.style.display = 'inline';
+            }
+          }
+        });
+        getterArr.push(uvGetter);
+      }
+
+      // 如果是文章，请求文章的浏览数，并自增
+      if ('true' === 'true') {
+        var viewCtn = document.querySelector('#leancloud-post-views-container');
+        if (viewCtn || enableIncr) {
+          var target = decodeURI('/2020/06/15/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B8%8ENodeMCU%E9%80%9A%E4%BF%A1%EF%BC%8C%E4%BB%A5%E6%9C%BA%E6%A2%B0%E6%89%8B%E6%8E%A7%E5%88%B6%E4%B8%BA%E4%BE%8B/');
+          var viewGetter = getRecord(Counter, target).then((record) => {
+            incrArr.push(buildIncrement(record.objectId))
+            if (viewCtn) {
+              var ele = document.querySelector('#leancloud-post-views');
+              if (ele) {
+                ele.innerText = (record.time || 0) + 1;
+                viewCtn.style.display = 'inline';
+              }
+            }
+          });
+          getterArr.push(viewGetter);
+        }
+      }
+
+      // 如果启动计数自增，批量发起自增请求
+      if (enableIncr) {
+        Promise.all(getterArr).then(() => {
+          incrArr.length > 0 && increment(Counter, incrArr);
+        })
+      }
+    }
+
+    var app_id = 'qP734H2xjPu5myijT5n9xQFw-gzGzoHsz'
+    var app_key = 'Y0u1HoRHwsRRgOM8utL9B4vp'
+    var server_url = 'https://qp734h2x.lc-cn-n1-shared.com'
+
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${ api_server }/1.1${ url }`, {
+          method,
+          headers: {
+            'X-LC-Id': app_id,
+            'X-LC-Key': app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+
+      addCount(Counter);
+    }
+
+    var api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${ app_id.slice(0, 8).toLowerCase() }.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(resp => resp.json())
+        .then(({api_server}) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "微信小程序与NodeMCU通信，以机械手控制为例&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+  
+  
+    <script>
+      !function (e, t, a) {
+        function r() {
+          for (var e = 0; e < s.length; e++) s[e].alpha <= 0 ? (t.body.removeChild(s[e].el), s.splice(e, 1)) : (s[e].y--, s[e].scale += .004, s[e].alpha -= .013, s[e].el.style.cssText = "left:" + s[e].x + "px;top:" + s[e].y + "px;opacity:" + s[e].alpha + ";transform:scale(" + s[e].scale + "," + s[e].scale + ") rotate(45deg);background:" + s[e].color + ";z-index:99999");
+          requestAnimationFrame(r)
+        }
+
+        function n() {
+          var t = "function" == typeof e.onclick && e.onclick;
+          e.onclick = function (e) {
+            t && t(), o(e)
+          }
+        }
+
+        function o(e) {
+          var a = t.createElement("div");
+          a.className = "heart", s.push({
+            el: a,
+            x: e.clientX - 5,
+            y: e.clientY - 5,
+            scale: 1,
+            alpha: 1,
+            color: c()
+          }), t.body.appendChild(a)
+        }
+
+        function i(e) {
+          var a = t.createElement("style");
+          a.type = "text/css";
+          try {
+            a.appendChild(t.createTextNode(e))
+          } catch (t) {
+            a.styleSheet.cssText = e
+          }
+          t.getElementsByTagName("head")[0].appendChild(a)
+        }
+
+        function c() {
+          return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+        }
+
+        var s = [];
+        e.requestAnimationFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (e) {
+          setTimeout(e, 1e3 / 60)
+        }, i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"), n(), r()
+      }(window, document);
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+</body>
+</html>
